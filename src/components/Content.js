@@ -1,4 +1,6 @@
-export function TodoList({ items, handleCheck, handleDelete }) {
+import React from "react";
+
+export function Content({ items, handleCheck, handleDelete }) {
   return (
     <main>
       {items.length ? (

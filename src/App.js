@@ -44,7 +44,7 @@ function App() {
   };
 
   return (
-    <>
+    <div className="App">
       <Header
         title="Todo List"
         newItem={newItem}
@@ -60,7 +60,7 @@ function App() {
         handleDelete={handleDelete}
       />
       <Footer length={items.length} />
-    </>
+    </div>
   );
 }
 

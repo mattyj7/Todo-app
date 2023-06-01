@@ -6,12 +6,28 @@ import SearchItem from "./components/SearchItem";
 import { useEffect, useState } from "react";
 
 function App() {
+  const API_URL = "http://localhost:3500/items";
+
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
   const [search, setSearch] = useState("");
+  const [fetchError, setFetchError] = useState(null);
 
   useEffect(() => {
-    setItems(JSON.parse(localStorage.getItem("shoppinglist")));
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw Error("Did not recieve expected data");
+        const listItems = await response.json();
+        console.log(listItems);
+        setItems(listItems);
+        setFetchError(null);
+      } catch (err) {
+        setFetchError(err.message);
+      }
+    };
+
+    (async () => await fetchItems())();
   }, []);
 
   const setAndSaveItems = (newItems) => {
@@ -54,13 +70,18 @@ function App() {
         handleSubmit={handleSubmit}
       />
       <SearchItem search={search} setSearch={setSearch} />
-      <Content
-        items={items.filter((item) =>
-          item.item.toLowerCase().includes(search.toLowerCase())
+      <main>
+        {fetchError && <p>{`Error: ${fetchError}`}</p>}
+        {!fetchError && (
+          <Content
+            items={items.filter((item) =>
+              item.item.toLowerCase().includes(search.toLowerCase())
+            )}
+            handleCheck={handleCheck}
+            handleDelete={handleDelete}
+          />
         )}
-        handleCheck={handleCheck}
-        handleDelete={handleDelete}
-      />
+      </main>
       <Footer length={items.length} />
     </div>
   );
